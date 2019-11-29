@@ -1,4 +1,4 @@
- /**
+/**
  *  Virtual status indicator to show a specific alarm status
  *
  *  Copyright 2016-2018 Nu Tech Software Solutions, Inc.
@@ -13,11 +13,19 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+
+/*
+ * global support
+ */
+import groovy.transform.Field
+@Field APPNAMESPACE = "alarmdecoder"
+
 metadata {
-    definition (name: "AlarmDecoder status indicator", namespace: "alarmdecoder", author: "sean@nutech.com") {
+    definition (name: "AlarmDecoder status indicator", namespace: APPNAMESPACE, author: "Nu Tech Software Solutions, Inc.") {
         capability "Contact Sensor"
     }
 
+    // tile definitions
     tiles {
         standardTile("contact", "device.contact", width: 2, height: 2, canChangeIcon: true) {
             state "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#00a0dc"
@@ -26,9 +34,22 @@ metadata {
         main "contact"
         details "contact"
     }
+
+    // preferences
+    preferences {
+        input name: "invert", type: "bool", title: "Invert", description: "Invert signal ON is OFF/OPEN is CLOSE/DETECTED is CLEAR", required: false
+    }
 }
 
 // parse events into attributes
 def parse(String description) {
-    log.debug "AlarmDecoderStatusIndicator: Parsing '${description}'"
+   log.debug "AlarmDecoderStatusIndicator: Parsing '${description}'"
+}
+
+def installed() {
+    updateDataValue("invert", invert.toString())
+}
+
+def updated() {
+    updateDataValue("invert", invert.toString())
 }

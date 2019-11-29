@@ -13,9 +13,16 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  */
+
+/*
+ * global support
+ */
+import groovy.transform.Field
+@Field APPNAMESPACE = "alarmdecoder"
+
 metadata {
-    definition (name: "AlarmDecoder virtual smoke alarm", namespace: "alarmdecoder", author: "sean@nutech.com") {
-        capability "smokeDetector"
+    definition (name: "AlarmDecoder virtual smoke alarm", namespace: APPNAMESPACE, author: "Nu Tech Software Solutions, Inc.") {
+        capability "Smoke Detector"
     }
 
     // tile definitions
@@ -24,8 +31,20 @@ metadata {
             state "clear", label: '${name}', icon: "st.alarm.smoke.clear", backgroundColor: "#79b821"
             state "detected", label: '${name}', icon: "st.alarm.smoke.smoke", backgroundColor: "#e86d13"
         }
-
         main "sensor"
         details "sensor"
     }
+
+    // preferences
+    preferences {
+        input name: "invert", type: "bool", title: "Invert", description: "Invert signal ON is OFF/OPEN is CLOSE/DETECTED is CLEAR", required: false
+    }
+}
+
+def installed() {
+    updateDataValue("invert", invert.toString())
+}
+
+def updated() {
+    updateDataValue("invert", invert.toString())
 }
